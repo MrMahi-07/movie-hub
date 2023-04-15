@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
 import clientApi from "../services/client-api";
+import { CanceledError } from "axios";
+import {
+	Card,
+	CardContent,
+	CardMedia,
+	Container,
+	Stack,
+	Typography,
+} from "@mui/material";
 
 interface MovieData {
 	backdrop_path: string;
@@ -24,18 +33,46 @@ interface Response {
 
 const MovieList = () => {
 	const [data, setData] = useState<MovieData[]>();
+	const [error, setError] = useState("");
 	useEffect(() => {
+		const controller = new AbortController();
 		clientApi
-			.get<Response>("/trending/all/day")
+			.get<Response>("/trending/all/day", { signal: controller.signal })
 			.then(({ data }) => setData(data.results))
-			.catch((err) => console.log(err.message));
+			.catch((err) => {
+				if (err instanceof CanceledError) return;
+				setError(err.message);
+			});
+
+		return () => controller.abort();
 	}, []);
+
+	if (error)
+		return (
+			<Typography color="error" variant={"h4"} textAlign={"center"}>
+				{error}
+			</Typography>
+		);
+
 	return (
-		<ul>
+		<Stack gap={5} direction={{ xs: "column", sm: "row" }} flexWrap={"wrap"}>
 			{data?.map((d) => (
-				<li key={d.id}>{d.title ? d.title : d.name}</li>
+				<Card
+					key={d.id}
+					sx={{ minWidth: 350, maxWidth: 400, borderRadius: 9 }}
+					elevation={12}
+				>
+					<CardMedia
+						component={"img"}
+						src={`https://image.tmdb.org/t/p/w500/${d.backdrop_path}`}
+						sx={{ aspectRatio: "16/9" }}
+					/>
+					<CardContent>
+						<Typography variant="h4">{d.title ? d.title : d.name}</Typography>
+					</CardContent>
+				</Card>
 			))}
-		</ul>
+		</Stack>
 	);
 };
 
