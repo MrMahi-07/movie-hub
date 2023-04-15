@@ -15,11 +15,22 @@ import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import ModeSwitcher from "./ModeSwitcher";
+import genres from "../data/genreList.json";
+import logo from "../assets/logo.svg";
+import { Avatar } from "@mui/material";
 
 const drawerWidth = 240;
 
-export default function ResponsiveDrawer() {
+interface Props {
+	onToggle: (mode: boolean) => void;
+}
+
+export default function ResponsiveDrawer({ onToggle }: Props) {
 	const [mobileOpen, setMobileOpen] = React.useState(false);
+	const [selectedGenre, setSelectedGenre] = React.useState(
+		null as unknown as number
+	);
 
 	const handleDrawerToggle = () => {
 		setMobileOpen(!mobileOpen);
@@ -30,13 +41,21 @@ export default function ResponsiveDrawer() {
 			<Toolbar />
 			<Divider />
 			<List>
-				{["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-					<ListItem key={text} disablePadding>
-						<ListItemButton>
+				{genres.map((genre) => (
+					<ListItem key={genre.id} disablePadding>
+						<ListItemButton
+							selected={genre.id == selectedGenre}
+							onClick={() => setSelectedGenre(genre.id)}
+						>
 							<ListItemIcon>
-								{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+								<Box
+									component={"img"}
+									alt={genre.name}
+									src={`src\\assets\\genre\\${genre.name.toLowerCase()}.webp`}
+									height={35}
+								/>
 							</ListItemIcon>
-							<ListItemText primary={text} />
+							<ListItemText primary={genre.name} />
 						</ListItemButton>
 					</ListItem>
 				))}
@@ -47,7 +66,7 @@ export default function ResponsiveDrawer() {
 					<ListItem key={text} disablePadding>
 						<ListItemButton>
 							<ListItemIcon>
-								{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+								<Avatar alt="Remy Sharp" src="src\assets\genre\war.webp" />
 							</ListItemIcon>
 							<ListItemText primary={text} />
 						</ListItemButton>
@@ -61,7 +80,7 @@ export default function ResponsiveDrawer() {
 		<Box sx={{ display: "flex" }}>
 			<CssBaseline />
 			<AppBar
-				position="absolute"
+				position="fixed"
 				sx={{
 					// width: { sm: `calc(100% - ${drawerWidth}px)` },
 					ml: { sm: `${drawerWidth}px` },
@@ -70,7 +89,7 @@ export default function ResponsiveDrawer() {
 					},
 				}}
 			>
-				<Toolbar>
+				<Toolbar sx={{ gap: 2, justifyContent: "flex-start" }}>
 					<IconButton
 						color="inherit"
 						aria-label="open drawer"
@@ -80,15 +99,18 @@ export default function ResponsiveDrawer() {
 					>
 						<MenuIcon />
 					</IconButton>
+					<a href="/" aria-label="Home Page">
+						<Box component={"img"} title="logo" src={logo} height={20} />
+					</a>
 					<Typography variant="h6" noWrap component="div">
 						Responsive drawer
 					</Typography>
+					<ModeSwitcher onChange={(e) => onToggle(e)} />
 				</Toolbar>
 			</AppBar>
 			<Box
 				component="nav"
 				sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-				aria-label="mailbox folders"
 			>
 				{/* The implementation can be swapped with js to avoid SEO duplication of links. */}
 				<Drawer
@@ -127,7 +149,7 @@ export default function ResponsiveDrawer() {
 				sx={{
 					flexGrow: 1,
 					p: 3,
-					width: { sm: `calc(100% - ${drawerWidth}px)` },
+					// width: { sm: `calc(100% - ${drawerWidth}px)` },
 				}}
 			>
 				<Toolbar />
