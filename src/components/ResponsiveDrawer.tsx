@@ -20,6 +20,7 @@ import genres from "../data/genreList.json";
 import logo from "../assets/logo.svg";
 import { Avatar } from "@mui/material";
 import MovieList from "./MovieList";
+import { Masonry } from "@mui/lab";
 
 const drawerWidth = 240;
 

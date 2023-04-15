@@ -1,4 +1,5 @@
 import axios from "axios";
+import { CanceledError } from "axios";
 
 export default axios.create({
 	baseURL: "https://api.themoviedb.org/3",
@@ -6,3 +7,5 @@ export default axios.create({
 		api_key: "2e0699049f9dd7ffb5f0f86681af1fb6",
 	},
 });
+
+export { CanceledError };
