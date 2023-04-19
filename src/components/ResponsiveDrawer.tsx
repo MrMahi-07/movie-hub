@@ -21,6 +21,7 @@ import logo from "../assets/logo.svg";
 import { Avatar } from "@mui/material";
 import MovieList from "./MovieList";
 import { Masonry } from "@mui/lab";
+import Model from "./Model";
 
 const drawerWidth = 240;
 
@@ -155,7 +156,8 @@ export default function ResponsiveDrawer({ onToggle }: Props) {
 				}}
 			>
 				<Toolbar />
-				<MovieList />
+				{/* <MovieList /> */}
+				<Model />
 			</Box>
 		</Box>
 	);

@@ -59,7 +59,7 @@ const MovieList = () => {
 							component={"img"}
 							alt={d.title ? d.title : d.name}
 							loading="lazy"
-							src={`https://image.tmdb.org/t/p/w500${d.backdrop_path}`}
+							src={`s://image.tmdb.org/t/p/w500${d.backdrop_path}`}
 							// height={300}
 						/>
 						<CardContent sx={{ position: "relative" }}>
