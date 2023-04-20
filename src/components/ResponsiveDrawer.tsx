@@ -50,7 +50,7 @@ export default function ResponsiveDrawer({ onToggle }: Props) {
 									component={"img"}
 									alt={genre.name}
 									// src={`src\\assets\\genre\\${genre.name.toLowerCase()}.webp`}
-									src={`/genre/${genre.name.toLowerCase()}.webp`}
+									src={`./genre/${genre.name.toLowerCase()}.webp`}
 									height={35}
 								/>
 							</ListItemIcon>
