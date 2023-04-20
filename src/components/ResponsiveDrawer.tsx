@@ -1,17 +1,14 @@
-import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -20,8 +17,7 @@ import genres from "../data/genreList.json";
 import logo from "../assets/logo.svg";
 import { Avatar } from "@mui/material";
 import MovieList from "./MovieList";
-import { Masonry } from "@mui/lab";
-import Model from "./Model";
+import { useState } from "react";
 
 const drawerWidth = 200;
 
@@ -30,10 +26,9 @@ interface Props {
 }
 
 export default function ResponsiveDrawer({ onToggle }: Props) {
-	const [mobileOpen, setMobileOpen] = React.useState(false);
-	const [selectedGenre, setSelectedGenre] = React.useState(
-		null as unknown as number
-	);
+	const [mobileOpen, setMobileOpen] = useState(false);
+	const [selectedGenre, setSelectedGenre] = useState<number | null>(null);
+	const [similar, setSimilar] = useState<number | null>(null);
 
 	const handleDrawerToggle = () => {
 		setMobileOpen(!mobileOpen);
@@ -156,7 +151,11 @@ export default function ResponsiveDrawer({ onToggle }: Props) {
 				}}
 			>
 				<Toolbar />
-				<MovieList />
+				<MovieList
+					genre={selectedGenre}
+					onSimilarSelect={(id) => setSimilar(id)}
+					similar={similar}
+				/>
 			</Box>
 		</Box>
 	);

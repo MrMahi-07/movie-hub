@@ -4,6 +4,7 @@ import movieLang from "../data/movieLang.json";
 import { useMovie } from "../hooks/useMovie";
 import {
 	Box,
+	Button,
 	Card,
 	CardContent,
 	CardMedia,
@@ -18,9 +19,19 @@ import { Masonry } from "@mui/lab";
 import Star from "@mui/icons-material/StarRateRounded";
 import Model from "./Model";
 
-const MovieList = () => {
+interface Props {
+	genre: number | null;
+	similar: number | null;
+	onSimilarSelect: (id: number) => void;
+}
+
+const MovieList = ({ genre, similar, onSimilarSelect }: Props) => {
 	const [video, setVideo] = useState("");
-	const { data, error } = useMovie(video);
+	const { data, error } = useMovie(
+		genre ? "/discover/movie" : similar ? `/movie/${similar}/similar` : "",
+		genre,
+		similar
+	);
 
 	if (error)
 		return (
@@ -60,23 +71,22 @@ const MovieList = () => {
 							component={"img"}
 							alt={d.title ? d.title : d.name}
 							loading="lazy"
-							src={`https://image.tmdb.org/t/p/w500${d.backdrop_path}`}
+							src={`https://image.tmdb.org/t/p/w500${
+								d.backdrop_path || d.poster_path
+							}`}
 							// height={300}
 						/>
 						<CardContent sx={{ position: "relative" }}>
 							<Stack spacing={2}>
-								<Stack direction={"row"} justifyContent={"space-between"}>
-									<Typography variant="h4">
+								<Stack direction={"row"} justifyContent={"flex-end"}>
+									<Typography variant="h4" mr={"auto"}>
 										{d.title ? d.title : d.name}
 									</Typography>
-
-									<>
-										<Star fontSize="large" sx={{ color: "gold" }} />
-										<Typography fontWeight={600} variant="h5" sx={{ mt: 0.4 }}>
-											{d.vote_average.toFixed(1)}
-											<Typography component={"span"}>/10</Typography>
-										</Typography>
-									</>
+									<Star fontSize="large" sx={{ color: "gold" }} />
+									<Typography fontWeight={600} variant="h5" sx={{ mt: 0.4 }}>
+										{d.vote_average.toFixed(1)}
+										<Typography component={"span"}>/10</Typography>
+									</Typography>
 								</Stack>
 								<Stack direction={"row"} spacing={1}>
 									{d.genre_ids
@@ -133,12 +143,6 @@ const MovieList = () => {
 										/>
 									</>
 								)}
-								<Chip
-									label="See more like this"
-									color="primary"
-									onClick={() => console.log("see more")}
-									sx={{ py: 2.5 }}
-								/>
 							</Stack>
 							<Paper
 								className="description"
@@ -165,6 +169,14 @@ const MovieList = () => {
 										{d.overview}
 									</Typography>
 									<Model data={d} />
+									<Button
+										color="primary"
+										variant="contained"
+										onClick={() => onSimilarSelect(d.id)}
+										href="/"
+									>
+										See more like this
+									</Button>
 								</Stack>
 							</Paper>
 						</CardContent>

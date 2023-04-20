@@ -5,7 +5,6 @@ import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import movieData from "../data/movieData.json";
 // import credit from "../data/credit.json";
 import {
 	Breadcrumbs,
@@ -28,6 +27,7 @@ import { MovieProps, useCredit } from "../hooks/useMovie";
 // import ytTrailer from "../hooks/ytTrailer";
 import { useState } from "react";
 import axios from "axios";
+import { GetId } from "../hooks/useYtTrailer";
 
 const style = {
 	position: "absolute" as "absolute",
@@ -110,7 +110,7 @@ const CreateModel = ({ data, clicked, onClose }: CreateProps) => {
 					part: "snippet",
 					maxResults: 1,
 					q: `${data.title || data.name} official trailer`,
-					key: "AIzaSyAh0gsTzOgV73tPVhQbkeE9iprkc8aQ35Q",
+					key: "AIzaSyCnPH50i0v5IIgTChDZiKzK3hrB07v7Ed8",
 				},
 			})
 			.then((res) => setData(res.data.items[0].id.videoId))
@@ -119,9 +119,8 @@ const CreateModel = ({ data, clicked, onClose }: CreateProps) => {
 
 	const { credits, videos } = movieDetail;
 	const trailer =
-		(videos.results.length &&
-			videos.results.filter((x) => x.type === "Trailer")[0].key) ||
-		ytTrailer();
+		videos.results.length &&
+		videos.results.filter((x) => x.type === "Trailer")[0].key;
 
 	return (
 		<Modal
@@ -158,24 +157,29 @@ const CreateModel = ({ data, clicked, onClose }: CreateProps) => {
 					<Stack width={1} direction={"row"} gap={1}>
 						<Box
 							component={"img"}
-							src={`https://image.tmdb.org/t/p/w500${data.backdrop_path}`}
+							src={`https://image.tmdb.org/t/p/w500${data.poster_path}`}
 							alt={data.title}
 							sx={{
 								objectFit: "cover",
 								display: { xs: "none", sm: "block" },
+								objectPosition: "center",
 							}}
 							width={0.24}
 						/>
-						<Box
-							component={"iframe"}
-							src={`https://www.youtube.com/embed/${trailer}?controls=0&amp;autoplay=1&mute=1`}
-							title="YouTube video player"
-							allowFullScreen
-							frameBorder="0"
-							width={1}
-							sx={{ aspectRatio: "16/9" }}
-							minWidth={300}
-						/>
+						{trailer ? (
+							<Box
+								component={"iframe"}
+								src={`https://www.youtube.com/embed/${trailer}?controls=0&amp;autoplay=1&mute=1`}
+								title="YouTube video player"
+								allowFullScreen
+								frameBorder="0"
+								width={1}
+								sx={{ aspectRatio: "16/9" }}
+								minWidth={300}
+							/>
+						) : (
+							<GetId name={data.title || data.name} />
+						)}
 						<Stack
 							width={0.3}
 							gap={1}
@@ -213,7 +217,7 @@ const CreateModel = ({ data, clicked, onClose }: CreateProps) => {
 					>
 						<Button
 							variant="outlined"
-							href={`https://www.themoviedb.org/movie/${data.id}/images/posters`}
+							href={`https://www.themoviedb.org/movie/${data.id}/videos`}
 							startIcon={<VideoLibraryIcon />}
 							fullWidth
 							color="inherit"
@@ -224,7 +228,7 @@ const CreateModel = ({ data, clicked, onClose }: CreateProps) => {
 						<Button
 							variant="outlined"
 							color="inherit"
-							href={`https://www.themoviedb.org/movie/${data.id}/videos`}
+							href={`https://www.themoviedb.org/movie/${data.id}/images/posters`}
 							startIcon={<PhotoLibraryIcon />}
 							fullWidth
 							size="large"
@@ -235,7 +239,7 @@ const CreateModel = ({ data, clicked, onClose }: CreateProps) => {
 					<Stack direction={"row"} gap={2}>
 						<Box
 							component={"img"}
-							src={`https://image.tmdb.org/t/p/w500${data.backdrop_path}`}
+							src={`https://image.tmdb.org/t/p/w500${data.poster_path}`}
 							alt={data.title}
 							sx={{
 								aspectRatio: "2/3",

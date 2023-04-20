@@ -26,16 +26,22 @@ export interface MovieQuery {
 	video?: string;
 }
 
-export const useMovie = (video: string) => {
+export const useMovie = (
+	endpoint: string,
+	genre: number | null,
+	similar: number | null
+) => {
 	const [data, setData] = useState<MovieProps[]>([]);
 	const [error, setError] = useState("");
-
+	const DEFAULT = "/trending/all/day";
 	useEffect(() => {
 		const controller = new AbortController();
 		clientApi
-			.get<Response>("/trending/all/day", {
+			.get<Response>(endpoint || DEFAULT, {
 				signal: controller.signal,
-				params: { videos: video },
+				params: {
+					with_genres: genre,
+				},
 			})
 			.then(({ data }) => setData(data.results))
 			.catch((err) => {
@@ -44,7 +50,7 @@ export const useMovie = (video: string) => {
 			});
 
 		return () => controller.abort();
-	}, []);
+	}, [genre, similar]);
 
 	return { data, error };
 };
