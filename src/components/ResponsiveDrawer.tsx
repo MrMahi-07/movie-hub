@@ -15,9 +15,12 @@ import Typography from "@mui/material/Typography";
 import ModeSwitcher from "./ModeSwitcher";
 import genres from "../data/genreList.json";
 import logo from "../assets/logo.svg";
-import { Avatar } from "@mui/material";
+import { Avatar, InputBase, Link, Stack } from "@mui/material";
 import MovieList from "./MovieList";
 import { useState } from "react";
+import { Search } from "@mui/icons-material";
+import SearchIcon from "@mui/icons-material/Search";
+import SearchBar from "./SearchBar";
 
 const drawerWidth = 200;
 
@@ -29,13 +32,14 @@ export default function ResponsiveDrawer({ onToggle }: Props) {
 	const [mobileOpen, setMobileOpen] = useState(false);
 	const [selectedGenre, setSelectedGenre] = useState<number | null>(null);
 	const [similar, setSimilar] = useState<number | null>(null);
+	const [search, setSearch] = useState("");
 
 	const handleDrawerToggle = () => {
 		setMobileOpen(!mobileOpen);
 	};
 
 	const drawer = (
-		<div>
+		<>
 			<Toolbar />
 			<Divider />
 			<List>
@@ -59,20 +63,7 @@ export default function ResponsiveDrawer({ onToggle }: Props) {
 					</ListItem>
 				))}
 			</List>
-			<Divider />
-			<List>
-				{["All mail", "Trash", "Spam"].map((text, index) => (
-					<ListItem key={text} disablePadding>
-						<ListItemButton>
-							<ListItemIcon>
-								<Avatar alt="Remy Sharp" src="src\assets\genre\war.webp" />
-							</ListItemIcon>
-							<ListItemText primary={text} />
-						</ListItemButton>
-					</ListItem>
-				))}
-			</List>
-		</div>
+		</>
 	);
 
 	return (
@@ -98,12 +89,11 @@ export default function ResponsiveDrawer({ onToggle }: Props) {
 					>
 						<MenuIcon />
 					</IconButton>
-					<a href="/" aria-label="Home Page">
+					<Link href="/" aria-label="Home Page">
 						<Box component={"img"} title="logo" src={logo} height={20} />
-					</a>
-					<Typography variant="h6" noWrap component="div">
-						Responsive drawer
-					</Typography>
+					</Link>
+
+					<SearchBar onSubmit={(q) => setSearch(q)} />
 					<ModeSwitcher onChange={(e) => onToggle(e)} />
 				</Toolbar>
 			</AppBar>
@@ -156,6 +146,7 @@ export default function ResponsiveDrawer({ onToggle }: Props) {
 					genre={selectedGenre}
 					onSimilarSelect={(id) => setSimilar(id)}
 					similar={similar}
+					search={search}
 				/>
 			</Box>
 		</Box>

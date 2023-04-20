@@ -29,7 +29,8 @@ export interface MovieQuery {
 export const useMovie = (
 	endpoint: string,
 	genre: number | null,
-	similar: number | null
+	similar: number | null,
+	search: string
 ) => {
 	const [data, setData] = useState<MovieProps[]>([]);
 	const [error, setError] = useState("");
@@ -41,6 +42,7 @@ export const useMovie = (
 				signal: controller.signal,
 				params: {
 					with_genres: genre,
+					query: search,
 				},
 			})
 			.then(({ data }) => setData(data.results))
@@ -50,7 +52,7 @@ export const useMovie = (
 			});
 
 		return () => controller.abort();
-	}, [genre, similar]);
+	}, [genre, similar, search]);
 
 	return { data, error };
 };

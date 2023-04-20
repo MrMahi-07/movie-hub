@@ -18,19 +18,28 @@ import { useState } from "react";
 import { Masonry } from "@mui/lab";
 import Star from "@mui/icons-material/StarRateRounded";
 import Model from "./Model";
+import imgNotFound from "../assets/image-not-found.jpg";
 
 interface Props {
 	genre: number | null;
 	similar: number | null;
+	search: string;
 	onSimilarSelect: (id: number) => void;
 }
 
-const MovieList = ({ genre, similar, onSimilarSelect }: Props) => {
+const MovieList = ({ genre, similar, onSimilarSelect, search }: Props) => {
 	const [video, setVideo] = useState("");
 	const { data, error } = useMovie(
-		genre ? "/discover/movie" : similar ? `/movie/${similar}/similar` : "",
+		genre
+			? "/discover/movie"
+			: similar
+			? `/movie/${similar}/similar`
+			: search
+			? "/search/movie"
+			: "",
 		genre,
-		similar
+		similar,
+		search
 	);
 
 	if (error)
@@ -51,13 +60,20 @@ const MovieList = ({ genre, similar, onSimilarSelect }: Props) => {
 
 	return (
 		<>
-			<Masonry columns={{ sm: 1, md: 2, lg: 3, xl: 4 }} spacing={4}>
+			<Masonry
+				columns={{ sm: 1, md: 2, lg: 3, xl: 4 }}
+				spacing={4}
+				sx={{
+					alignContent: { xs: "center", sm: "center", md: "flex-start" },
+					mx: "auto",
+				}}
+			>
 				{data.map((d, i) => (
 					<Card
 						key={i}
 						sx={{
 							// minWidth: 380,
-							// maxWidth: 400,
+							maxWidth: 400,
 							borderRadius: 4,
 							transition: "all .4s",
 							"&:hover,&:active": { transform: "scale(1.02)" },
@@ -71,15 +87,19 @@ const MovieList = ({ genre, similar, onSimilarSelect }: Props) => {
 							component={"img"}
 							alt={d.title ? d.title : d.name}
 							loading="lazy"
-							src={`https://image.tmdb.org/t/p/w500${
+							src={
 								d.backdrop_path || d.poster_path
-							}`}
+									? `https://image.tmdb.org/t/p/w500${
+											d.backdrop_path || d.poster_path
+									  }`
+									: imgNotFound
+							}
 							// height={300}
 						/>
 						<CardContent sx={{ position: "relative" }}>
 							<Stack spacing={2}>
 								<Stack direction={"row"} justifyContent={"flex-end"}>
-									<Typography variant="h4" mr={"auto"}>
+									<Typography variant="h5" fontWeight={600} mr={"auto"}>
 										{d.title ? d.title : d.name}
 									</Typography>
 									<Star fontSize="large" sx={{ color: "gold" }} />
@@ -153,6 +173,7 @@ const MovieList = ({ genre, similar, onSimilarSelect }: Props) => {
 									transition: "all .6s",
 									maxHeight: 0,
 									borderRadius: 4,
+									width: 1,
 								}}
 								elevation={4}
 							>

@@ -18,13 +18,13 @@ import {
 	ListItemText,
 	Stack,
 } from "@mui/material";
+
 import genres from "../data/genreList.json";
 import Star from "@mui/icons-material/StarRateRounded";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
 import PhotoLibraryIcon from "@mui/icons-material/PhotoLibrary";
 import { MovieProps, useCredit } from "../hooks/useMovie";
-// import ytTrailer from "../hooks/ytTrailer";
 import { useState } from "react";
 import axios from "axios";
 import { GetId } from "../hooks/useYtTrailer";
