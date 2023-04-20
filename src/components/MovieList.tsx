@@ -3,6 +3,7 @@ import AddIcon from "@mui/icons-material/Add";
 import movieLang from "../data/movieLang.json";
 import { useMovie } from "../hooks/useMovie";
 import {
+	Box,
 	Card,
 	CardContent,
 	CardMedia,
@@ -14,6 +15,8 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { Masonry } from "@mui/lab";
+import Star from "@mui/icons-material/StarRateRounded";
+import Model from "./Model";
 
 const MovieList = () => {
 	const [video, setVideo] = useState("");
@@ -27,7 +30,7 @@ const MovieList = () => {
 		);
 
 	const handleClick = () => {
-		console.info("You clicked the Chip.");
+		console.log("You clicked the Chip.");
 	};
 
 	const toDateString = (date: string) => {
@@ -38,9 +41,9 @@ const MovieList = () => {
 	return (
 		<>
 			<Masonry columns={{ sm: 1, md: 2, lg: 3, xl: 4 }} spacing={4}>
-				{data.map((d) => (
+				{data.map((d, i) => (
 					<Card
-						key={d.id}
+						key={i}
 						sx={{
 							// minWidth: 380,
 							// maxWidth: 400,
@@ -52,28 +55,28 @@ const MovieList = () => {
 							},
 						}}
 						elevation={8}
-						// onMouseEnter={() => setTimeout(() => setHover(true), 200)}
-						// onMouseLeave={() => setTimeout(() => setHover(false), 200)}
 					>
 						<CardMedia
 							component={"img"}
 							alt={d.title ? d.title : d.name}
 							loading="lazy"
-							src={`s://image.tmdb.org/t/p/w500${d.backdrop_path}`}
+							src={`https://image.tmdb.org/t/p/w500${d.backdrop_path}`}
 							// height={300}
 						/>
 						<CardContent sx={{ position: "relative" }}>
 							<Stack spacing={2}>
 								<Stack direction={"row"} justifyContent={"space-between"}>
-									<Typography variant="h4" fontWeight={"900"}>
+									<Typography variant="h4">
 										{d.title ? d.title : d.name}
 									</Typography>
-									<Chip
-										label={d.vote_average.toFixed(1)}
-										color="success"
-										variant="outlined"
-										sx={{ borderRadius: 2, mt: 1 }}
-									/>
+
+									<>
+										<Star fontSize="large" sx={{ color: "gold" }} />
+										<Typography fontWeight={600} variant="h5" sx={{ mt: 0.4 }}>
+											{d.vote_average.toFixed(1)}
+											<Typography component={"span"}>/10</Typography>
+										</Typography>
+									</>
 								</Stack>
 								<Stack direction={"row"} spacing={1}>
 									{d.genre_ids
@@ -84,7 +87,7 @@ const MovieList = () => {
 												.map((x) => (
 													<Chip
 														key={x.id}
-														color="info"
+														color="primary"
 														variant="outlined"
 														label={x.name}
 														onClick={() => console.log(x.id)}
@@ -92,6 +95,33 @@ const MovieList = () => {
 												))
 										)}
 								</Stack>
+								<Divider />
+								{d.release_date && (
+									<>
+										<Typography variant="subtitle2">
+											Release Date:{" "}
+											<Typography component={"span"}>
+												{toDateString(d.release_date)}
+											</Typography>
+										</Typography>
+									</>
+								)}
+								{d.original_language && (
+									<>
+										<Typography variant="subtitle2">
+											Original Language:{" "}
+											<Typography component={"span"}>
+												{movieLang
+													.filter((x) => x.iso_639_1 == d.original_language)
+													.map((x) => (
+														<Typography key={x.english_name} component={"span"}>
+															{x.english_name}
+														</Typography>
+													))}
+											</Typography>
+										</Typography>
+									</>
+								)}
 								{d.vote_count > 100 && (
 									<>
 										<Divider />
@@ -105,7 +135,7 @@ const MovieList = () => {
 								)}
 								<Chip
 									label="See more like this"
-									color="info"
+									color="primary"
 									onClick={() => console.log("see more")}
 									sx={{ py: 2.5 }}
 								/>
@@ -123,38 +153,18 @@ const MovieList = () => {
 								elevation={4}
 							>
 								<Stack m={2} spacing={1}>
-									<Typography fontWeight={"bold"} variant="subtitle1">
-										Overview:
-										<Typography>{d.overview}</Typography>
+									<Typography fontWeight={"bold"}>Overview:</Typography>
+									<Typography
+										sx={{
+											display: "-webkit-box",
+											WebkitLineClamp: 4,
+											overflow: "hidden",
+											WebkitBoxOrient: "vertical",
+										}}
+									>
+										{d.overview}
 									</Typography>
-									{d.release_date && (
-										<>
-											<Divider />
-											<Typography variant="subtitle2">
-												Release Date:{" "}
-												<Typography component={"span"}>
-													{toDateString(d.release_date)}
-												</Typography>
-											</Typography>
-										</>
-									)}
-									{/* {d.original_language && (
-										<>
-											<Divider />
-											<Typography variant="subtitle2">
-												Original Language:{" "}
-												<Typography component={"span"}>
-													{movieLang
-														.filter((x) => x.iso_639_1 == d.original_language)
-														.map((x) => (
-															<Typography component={"span"}>
-																{x.english_name}
-															</Typography>
-														))}
-												</Typography>
-											</Typography>
-										</>
-									)} */}
+									<Model data={d} />
 								</Stack>
 							</Paper>
 						</CardContent>

@@ -23,7 +23,7 @@ import MovieList from "./MovieList";
 import { Masonry } from "@mui/lab";
 import Model from "./Model";
 
-const drawerWidth = 240;
+const drawerWidth = 200;
 
 interface Props {
 	onToggle: (mode: boolean) => void;
@@ -156,8 +156,7 @@ export default function ResponsiveDrawer({ onToggle }: Props) {
 				}}
 			>
 				<Toolbar />
-				{/* <MovieList /> */}
-				<Model />
+				<MovieList />
 			</Box>
 		</Box>
 	);
